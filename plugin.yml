@@ -1,0 +1,5 @@
+name: FactoryCraft
+author: Tech_
+version: "1.0"
+api-version: "1.16"
+main: com.techdev.factorycraft.main.Main
