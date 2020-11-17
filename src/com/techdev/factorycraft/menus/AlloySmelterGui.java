@@ -9,6 +9,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AlloySmelterGui implements Listener {
 
     public static int guiSlots = 5 * 9;
@@ -17,6 +20,8 @@ public class AlloySmelterGui implements Listener {
 
     public static int[] outputSlots = {39};
     public static int hookSlot = 41;
+
+    public static List<Integer> nonStaticItemSlots = new ArrayList<>();
 
     public static int[] inputSlots = {11, 13, 15};
 

@@ -2,7 +2,6 @@ package com.techdev.factorycraft.listeners;
 
 import com.techdev.factorycraft.main.Main;
 import com.techdev.factorycraft.menus.AlloySmelterGui;
-import com.techdev.factorycraft.util.AlloySmelterStatus;
 import com.techdev.factorycraft.util.StringHasher;
 import com.techdev.factorycraft.util.alloysmelter.AlloySmelterRecipeValidator;
 import org.bukkit.Bukkit;
@@ -58,13 +57,17 @@ public class AlloySmelterEvents implements Listener {
                 {
                     YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
                     String blockId = getBlockId(event.getClickedBlock().getLocation());
-                    List<ItemStack> blockContents = (List<ItemStack>) config.getList("data." + blockId + ".gui");
+                    List<ItemStack> nonStaticItems = (List<ItemStack>) config.getList("data." + blockId + ".gui");
+                    List<ItemStack> defaultMenuContents = Arrays.asList(new AlloySmelterGui(event.getPlayer()).getInventory().getContents());
+
+                    for (int i = 0; i < nonStaticItemSlots.size(); i++) {
+                        defaultMenuContents.set(nonStaticItemSlots.get(i), nonStaticItems.get(i));
+                    }
 
                     Inventory inventory = Bukkit.createInventory(event.getPlayer(), guiSlots, guiTitle);
 
-                    for (int i = 0; i < blockContents.size(); i++) {
-                        if(blockContents.get(i) != null)
-                            inventory.setItem(i, blockContents.get(i));
+                    for (int i = 0; i < defaultMenuContents.size(); i++) {
+                        inventory.setItem(i, defaultMenuContents.get(i));
                     }
 
                     event.getPlayer().openInventory(inventory);
@@ -111,11 +114,10 @@ public class AlloySmelterEvents implements Listener {
             if(file.exists())
             {
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-                Inventory defaultMenu = new AlloySmelterGui(event.getPlayer()).getInventory();
-                List<ItemStack> defaultMenuContents = Arrays.asList(defaultMenu.getContents());
+                List<ItemStack> defaultNonStaticItems = Arrays.asList(null, null, null, null, hookBlackWhite);
                 String blockId = getBlockId(event.getBlock().getLocation());
 
-                config.set("data." + blockId + ".gui", defaultMenuContents);
+                config.set("data." + blockId + ".gui", defaultNonStaticItems);
 
                 try {
                     config.save(file);
@@ -127,6 +129,7 @@ public class AlloySmelterEvents implements Listener {
     }
 
     @EventHandler
+    @SuppressWarnings("unchecked")
     public void onBlockBreak(BlockBreakEvent event)
     {
         if(event.getBlock().getType() == alloySmelterBlockType)
@@ -137,13 +140,11 @@ public class AlloySmelterEvents implements Listener {
             {
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
                 String blockId = getBlockId(event.getBlock().getLocation());
-                List<ItemStack> blockContents = (List<ItemStack>) config.getList("data." + blockId + ".gui");
+                List<ItemStack> nonStaticItems = (List<ItemStack>) config.getList("data." + blockId + ".gui");
 
-                for (int outputSlot : outputSlots) {
-                    event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), blockContents.get(outputSlot));
-                }
-                for (int inputSlot : inputSlots) {
-                    event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), blockContents.get(inputSlot));
+                for (int i = 0; i < nonStaticItems.size(); i++) {
+                    if(nonStaticItems.get(i) != null && i != 4)
+                        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), nonStaticItems.get(i));
                 }
 
                 config.set("data." + blockId, null);
@@ -206,9 +207,14 @@ public class AlloySmelterEvents implements Listener {
             {
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
                 String blockId = StringHasher.hashString(Arrays.toString(lastInteractedBlockPos.get(event.getPlayer().getUniqueId())));
-                List<ItemStack> contents = Arrays.asList(event.getInventory().getContents());
+                List<ItemStack> menuContents = Arrays.asList(event.getInventory().getContents());
+                List<ItemStack> nonStaticItems = new ArrayList<>();
 
-                config.set("data." + blockId + ".gui", contents);
+                for (Integer nonStaticItemSlot : nonStaticItemSlots) {
+                    nonStaticItems.add(menuContents.get(nonStaticItemSlot));
+                }
+
+                config.set("data." + blockId + ".gui", nonStaticItems);
 
                 try {
                     config.save(file);

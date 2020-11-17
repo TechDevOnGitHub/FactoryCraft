@@ -4,11 +4,14 @@ import com.techdev.factorycraft.util.alloysmelter.AlloySmelterRecipe;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import static com.techdev.factorycraft.menus.AlloySmelterGui.*;
+
 public class AlloySmelterSetup {
 
     public void setup()
     {
         registerRecipes();
+        setNonStaticItemSlots();
     }
 
     public void registerRecipes()
@@ -27,6 +30,17 @@ public class AlloySmelterSetup {
             20.0f,
             "Crying Obsidian"
         );
+    }
+
+    public void setNonStaticItemSlots()
+    {
+        for (int inputSlot : inputSlots) {
+            nonStaticItemSlots.add(inputSlot);
+        }
+        for (int outputSlot : outputSlots) {
+            nonStaticItemSlots.add(outputSlot);
+        }
+        nonStaticItemSlots.add(hookSlot);
     }
 
 }
