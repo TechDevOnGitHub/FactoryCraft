@@ -87,20 +87,6 @@ public class AlloySmelterEvents implements Listener {
 
         if(event.getBlock().getType() == alloySmelterBlockType)
         {
-            /*File file = new File(JavaPlugin.getProvidingPlugin(Main.class).getDataFolder(), "alloysmelter_data.yml");
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            String blockId = getBlockId(event.getBlock().getLocation());
-            AlloySmelterGui defaultMenu = new AlloySmelterGui(event.getPlayer());
-            List<ItemStack> blockContents = Arrays.asList(defaultMenu.getInventory().getContents());
-
-            config.set("data." + blockId + ".gui", blockContents);
-
-            try {
-                config.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
             File file = new File(JavaPlugin.getProvidingPlugin(Main.class).getDataFolder(), "alloysmelter_data.yml");
 
             if(!file.exists()) {
@@ -196,7 +182,6 @@ public class AlloySmelterEvents implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("unchecked")
     public void onMenuClose(InventoryCloseEvent event)
     {
         if(event.getView().getTitle().equals(guiTitle))
