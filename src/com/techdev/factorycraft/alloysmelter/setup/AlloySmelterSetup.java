@@ -1,10 +1,10 @@
-package com.techdev.factorycraft.setup;
+package com.techdev.factorycraft.alloysmelter.setup;
 
-import com.techdev.factorycraft.util.alloysmelter.AlloySmelterRecipe;
+import com.techdev.factorycraft.alloysmelter.util.AlloySmelterRecipe;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import static com.techdev.factorycraft.menus.AlloySmelterGui.*;
+import static com.techdev.factorycraft.alloysmelter.gui.AlloySmelterGui.*;
 
 public class AlloySmelterSetup {
 

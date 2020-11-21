@@ -1,7 +1,7 @@
 package com.techdev.factorycraft.main;
 
-import com.techdev.factorycraft.listeners.AlloySmelterEvents;
-import com.techdev.factorycraft.setup.AlloySmelterSetup;
+import com.techdev.factorycraft.alloysmelter.listeners.AlloySmelterEvents;
+import com.techdev.factorycraft.alloysmelter.setup.AlloySmelterSetup;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;

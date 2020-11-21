@@ -1,4 +1,4 @@
-package com.techdev.factorycraft.util.alloysmelter;
+package com.techdev.factorycraft.alloysmelter.util;
 
 import org.bukkit.inventory.ItemStack;
 

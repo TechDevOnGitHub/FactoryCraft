@@ -1,15 +1,21 @@
-package com.techdev.factorycraft.menus;
+package com.techdev.factorycraft.alloysmelter.gui;
 
+import com.techdev.factorycraft.alloysmelter.util.AlloySmelterRecipeValidator;
+import com.techdev.factorycraft.main.Main;
+import com.techdev.factorycraft.util.StringHasher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AlloySmelterGui implements Listener {
@@ -127,4 +133,55 @@ public class AlloySmelterGui implements Listener {
         return item;
     }
 
+    public static ItemStack getHookSlotItem(InventoryView inventoryView, AlloySmelterRecipeValidator validator) {
+        ItemStack hook;
+        if (validator.isValidRecipe && outputHasEnoughRoom(inventoryView, validator)) {
+            hook = hookGreen;
+            ItemMeta hookMeta = hook.getItemMeta();
+            hookMeta.setDisplayName(ChatColor.GREEN + "Craft");
+            ArrayList<String> hookLore = new ArrayList<>();
+            hookLore.add(ChatColor.DARK_GRAY + ">> " + ChatColor.GRAY + "Recipe name: " + validator.recipeName);
+            hookLore.add(ChatColor.DARK_GRAY + ">> " + ChatColor.GRAY + "Amount: " + ChatColor.GOLD + validator.recipeAmount + "x");
+            hookLore.add(ChatColor.DARK_GRAY + ">> " + ChatColor.GRAY + "Duration: " + ChatColor.YELLOW + validator.recipeCraftingCuration + "s");
+            hookMeta.setLore(hookLore);
+            hook.setItemMeta(hookMeta);
+        } else {
+            hook = hookBlackWhite;
+        }
+        return hook;
+    }
+
+    public static void updateGui(Player player)
+    {
+        Bukkit.getScheduler().runTaskLater(Main.getPlugin(Main.class), new Runnable() {
+
+            @Override
+            public void run()
+            {
+                AlloySmelterRecipeValidator validator = new AlloySmelterRecipeValidator();
+                try {
+                    validator = new AlloySmelterRecipeValidator(player.getOpenInventory(), inputSlots, outputSlots);
+                } catch (NullPointerException ignored) {    }
+
+                InventoryView inventoryView = player.getOpenInventory();
+                inventoryView.setItem(hookSlot, getHookSlotItem(inventoryView, validator));
+            }
+        }, 0L);
+    }
+
+    public static boolean outputHasEnoughRoom(InventoryView inventoryView, AlloySmelterRecipeValidator validator)
+    {
+        int x = 0;
+        try {
+            x = inventoryView.getItem(outputSlots[0]).getAmount() + validator.resultItemAmount;
+        } catch (NullPointerException e) {      }
+        return x <= 64;
+    }
+
+    public static String getBlockId(Location location)
+    {
+        int[] blockPosition = new int[]{location.getBlockX(), location.getBlockY(), location.getBlockZ()};
+        String blockId = StringHasher.hashString(Arrays.toString(blockPosition));
+        return blockId;
+    }
 }

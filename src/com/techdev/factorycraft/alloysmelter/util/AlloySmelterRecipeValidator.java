@@ -1,6 +1,5 @@
-package com.techdev.factorycraft.util.alloysmelter;
+package com.techdev.factorycraft.alloysmelter.util;
 
-import io.netty.util.internal.MathUtil;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
