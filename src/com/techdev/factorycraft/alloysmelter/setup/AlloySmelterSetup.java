@@ -4,7 +4,7 @@ import com.techdev.factorycraft.alloysmelter.util.AlloySmelterRecipe;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import static com.techdev.factorycraft.alloysmelter.gui.AlloySmelterGui.*;
+import static com.techdev.factorycraft.alloysmelter.menus.AlloySmelterGui.*;
 
 public class AlloySmelterSetup {
 
