@@ -2,7 +2,6 @@ package com.techdev.factorycraft.alloysmelter.listeners;
 
 import com.techdev.factorycraft.main.Main;
 import com.techdev.factorycraft.alloysmelter.menus.AlloySmelterGui;
-import com.techdev.factorycraft.util.Hologram;
 import com.techdev.factorycraft.util.StringHasher;
 import com.techdev.factorycraft.alloysmelter.util.AlloySmelterRecipeValidator;
 import org.bukkit.Bukkit;
@@ -18,7 +17,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -113,13 +111,6 @@ public class AlloySmelterEvents implements Listener {
                 }
             }
 
-            /*Player player = event.getPlayer();
-            Location armorStandLocation = event.getBlock().getLocation();
-            armorStandLocation.setY(armorStandLocation.getY() + 1.0);
-            armorStandLocation.setX(armorStandLocation.getX() + 0.5);
-            armorStandLocation.setZ(armorStandLocation.getZ() + 0.5);
-
-            new Hologram("Some example text", armorStandLocation, player.getWorld());*/
         }
     }
 
@@ -137,10 +128,12 @@ public class AlloySmelterEvents implements Listener {
                 String blockId = getBlockId(event.getBlock().getLocation());
                 List<ItemStack> nonStaticItems = (List<ItemStack>) config.getList("data." + blockId + ".gui");
 
-                for (int i = 0; i < nonStaticItems.size(); i++) {
-                    if(nonStaticItems.get(i) != null && i != 4)
-                        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), nonStaticItems.get(i));
-                }
+                try {
+                    for (int i = 0; i < nonStaticItems.size(); i++) {
+                        if(nonStaticItems.get(i) != null && i != 4)
+                            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), nonStaticItems.get(i));
+                    }
+                } catch (NullPointerException ignore) {     }
 
                 config.set("data." + blockId, null);
 
@@ -177,20 +170,6 @@ public class AlloySmelterEvents implements Listener {
     }
 
     @EventHandler
-    public void onMenuDrag(InventoryDragEvent event)
-    {
-        if(event.getView().getTitle().equals(guiTitle))
-        {
-            try {
-                if(event.getView().getTitle().equals(guiTitle))
-                {
-                    event.setCancelled(true);
-                }
-            } catch (NullPointerException ignored) {    }
-        }
-    }
-
-    @EventHandler
     public void onMenuClose(InventoryCloseEvent event)
     {
         if(event.getView().getTitle().equals(guiTitle))
@@ -200,7 +179,7 @@ public class AlloySmelterEvents implements Listener {
             if(file.exists())
             {
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-                String blockId = StringHasher.hashString(Arrays.toString(lastInteractedBlockPos.get(event.getPlayer().getUniqueId())));
+                String blockId = getBlockId(lastInteractedBlockPos.get(event.getPlayer().getUniqueId()));
                 List<ItemStack> menuContents = Arrays.asList(event.getInventory().getContents());
                 List<ItemStack> nonStaticItems = new ArrayList<>();
 
@@ -276,7 +255,7 @@ public class AlloySmelterEvents implements Listener {
             ArrayList<String> hookLore = new ArrayList<>();
             hookLore.add(ChatColor.DARK_GRAY + ">> " + ChatColor.GRAY + "Recipe name: " + validator.recipeName);
             hookLore.add(ChatColor.DARK_GRAY + ">> " + ChatColor.GRAY + "Amount: " + ChatColor.GOLD + validator.recipeAmount + "x");
-            hookLore.add(ChatColor.DARK_GRAY + ">> " + ChatColor.GRAY + "Duration: " + ChatColor.YELLOW + validator.recipeCraftingCuration + "s");
+            hookLore.add(ChatColor.DARK_GRAY + ">> " + ChatColor.GRAY + "Duration: " + ChatColor.YELLOW + validator.totalRecipeCraftingCuration + "s");
             hookMeta.setLore(hookLore);
             hook.setItemMeta(hookMeta);
         } else {
@@ -301,4 +280,7 @@ public class AlloySmelterEvents implements Listener {
         return blockId;
     }
 
+    public String getBlockId(int[] lastInteractedBlockPos) {
+        return StringHasher.hashString(Arrays.toString(lastInteractedBlockPos));
+    }
 }

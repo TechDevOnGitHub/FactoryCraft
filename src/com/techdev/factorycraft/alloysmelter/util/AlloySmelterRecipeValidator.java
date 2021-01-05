@@ -7,7 +7,7 @@ public class AlloySmelterRecipeValidator {
 
     public boolean isValidRecipe;
     public String recipeName;
-    public float recipeCraftingCuration;
+    public float totalRecipeCraftingCuration;
     public int recipeAmount;
     public int[] minRecipeItemAmounts;
     public ItemStack resultItem;
@@ -45,10 +45,10 @@ public class AlloySmelterRecipeValidator {
 
             if(isValidFuel && isValidIngredients && isMinItemAmounts)
             {
-                this.recipeCraftingCuration = AlloySmelterRecipe.recipes[i].getCraftingDuration();
+                this.totalRecipeCraftingCuration = AlloySmelterRecipe.recipes[i].getCraftingDuration();
                 this.recipeName = AlloySmelterRecipe.recipes[i].getRecipeName();
                 this.recipeAmount = getMaxRecipeCraftingAmount(inventoryView, inputSlots, AlloySmelterRecipe.recipes[i], fuelIndex);
-                this.recipeCraftingCuration *= recipeAmount;
+                this.totalRecipeCraftingCuration *= recipeAmount;
                 this.minRecipeItemAmounts = getMinRecipeItemAmounts(i, fuelIndex);
                 this.resultItem = AlloySmelterRecipe.recipes[i].getResult();
                 this.resultItemAmount = AlloySmelterRecipe.recipes[i].getResult().getAmount();

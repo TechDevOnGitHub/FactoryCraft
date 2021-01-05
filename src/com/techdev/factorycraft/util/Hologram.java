@@ -18,7 +18,6 @@ public class Hologram
         double originalY = location.getY();
         location.setY(0.0);
         ArmorStand armorStand = (ArmorStand) world.spawnEntity(location, EntityType.ARMOR_STAND);
-        armorStand.setCustomName(message);
         armorStand.setMarker(true);
         armorStand.setVisible(false);
 
@@ -27,9 +26,10 @@ public class Hologram
             public void run() {
                 location.setY(originalY);
                 armorStand.teleport(location);
+                armorStand.setCustomName(message);
                 armorStand.setCustomNameVisible(true);
             }
-        }, 2L);
+        }, 1L);
 
         this.entity = armorStand;
         this.message = message;

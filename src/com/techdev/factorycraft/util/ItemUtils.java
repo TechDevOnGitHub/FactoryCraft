@@ -15,4 +15,10 @@ public class ItemUtils
         item.setItemMeta(itemMeta);
         return item;
     }
+
+    public static ItemStack modifyAmount(ItemStack item, int modifier) {
+        int newAmount = item.getAmount() + modifier;
+        item.setAmount(newAmount);
+        return item;
+    }
 }
