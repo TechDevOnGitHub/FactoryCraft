@@ -12,4 +12,4 @@
   * **Crusher**
   * **Custom Items**
 
-  It's constantly being worked on so stay tuned!
+  **This project is currently not reall being worked on and will eventually get a big refactor in the future!**
